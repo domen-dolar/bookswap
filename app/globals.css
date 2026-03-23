@@ -10,8 +10,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-section: #fff1d9;
-  --color-btn-green: #378d4b;
+  --color-primary: #fff1d9;
+  --color-secondary: #4d342d;
+  --color-tertiary: #da7f53;
 }
 
 body {
@@ -22,7 +23,7 @@ body {
 
 @layer utilities {
   .header {
-    @apply shadow-xl p-3 bg-section fixed top-0 w-full z-10;
+    @apply shadow-xl p-3 bg-primary fixed top-0 w-full z-10;
   }
 
   .main {
@@ -30,10 +31,10 @@ body {
   }
 
   .footer {
-    @apply bg-section text-center text-sm py-4;
+    @apply bg-primary text-center text-sm py-4;
   }
 
   .btn {
-    @apply bg-btn-green p-3 rounded-md hover:opacity-75 hover:cursor-pointer;
+    @apply bg-secondary text-primary p-3 rounded-md hover:opacity-75 hover:cursor-pointer;
   }
 }
