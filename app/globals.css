@@ -37,4 +37,20 @@ body {
   .btn {
     @apply bg-secondary text-primary p-3 rounded-md hover:opacity-75 hover:cursor-pointer;
   }
+
+  .authPage {
+    @apply flex items-center justify-center h-full;
+  }
+
+  .authOuterDiv {
+    @apply flex flex-col space-y-10 max-w-9/10 sm:min-w-1/3;
+  }
+
+  .authFormDiv {
+    @apply p-10 rounded-lg bg-primary shadow-xl space-y-5;
+  }
+
+  .formTextInput {
+    @apply bg-white p-2 rounded-md border border-tertiary focus:outline-tertiary;
+  }
 }
