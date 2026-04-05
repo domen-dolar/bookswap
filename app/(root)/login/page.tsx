@@ -1,6 +1,14 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+import { logIn } from "./actions";
 
 const Login = () => {
+  async function handleLogin(provider: string, formData?: FormData) {
+    await logIn(provider, formData);
+  }
+
   return (
     <div className="authPage">
       <div className="authOuterDiv">
@@ -46,7 +54,12 @@ const Login = () => {
                 <span className="px-4 bg-primary">Ali</span>
               </div>
             </div>
-            <button className="btn">Prijavi se z Googlom</button>
+            <form action={() => handleLogin("google")}>
+              <button className="btn flex items-center mx-auto space-x-2">
+                <Image src="/google.png" alt="google" width={24} height={24} />
+                <div>Prijavi se z Googlom</div>
+              </button>
+            </form>
           </div>
         </div>
       </div>
