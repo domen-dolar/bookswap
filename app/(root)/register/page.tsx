@@ -1,13 +1,28 @@
+"use client";
+
 import Link from "next/link";
+import { registerUser } from "./actions";
+import { useState } from "react";
 
 const Register = () => {
+  const [error, setError] = useState<string>();
+
+  async function handleSubmit(formData: FormData) {
+    const registration = await registerUser(formData);
+
+    if (registration?.error) setError(registration.error);
+  }
+
   return (
     <div className="authPage">
       <div className="authOuterDiv">
         <h1 className="text-3xl text-center">Registracija</h1>
 
         <div className="authFormDiv">
-          <form className="space-y-5">
+          <form
+            action={(FormData) => handleSubmit(FormData)}
+            className="space-y-5"
+          >
             <div className="flex flex-col">
               <label htmlFor="username">Uporabniško ime</label>
               <input
@@ -15,6 +30,7 @@ const Register = () => {
                 id="username"
                 name="username"
                 className="formTextInput"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -24,6 +40,7 @@ const Register = () => {
                 id="email"
                 name="email"
                 className="formTextInput"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -33,6 +50,7 @@ const Register = () => {
                 id="password"
                 name="password"
                 className="formTextInput"
+                required
               />
             </div>
             <div className="flex flex-col">
@@ -42,8 +60,14 @@ const Register = () => {
                 id="repeatPassword"
                 name="repeatPassword"
                 className="formTextInput"
+                required
               />
             </div>
+            {error && (
+              <div>
+                <p className="text-red-500 text-center">{error}</p>
+              </div>
+            )}
             <div className="flex justify-center">
               <button className="btn min-w-30">Registriraj se</button>
             </div>

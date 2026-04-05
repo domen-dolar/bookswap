@@ -16,6 +16,7 @@
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.22.0",
+    "bcryptjs": "^3.0.3",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "next-sanity": "^11.6.12",
