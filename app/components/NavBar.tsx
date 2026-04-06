@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
+import ProfileOrLogoutButton from "./ProfileOrLogoutButton";
 
 const Navbar = async () => {
   const session = await auth();
@@ -15,9 +16,7 @@ const Navbar = async () => {
 
         <div className="flex items-center gap-5">
           {session ? (
-            <Link href="/profile">
-              <button className="btn min-w-30">Moj Profil</button>
-            </Link>
+            <ProfileOrLogoutButton />
           ) : (
             <>
               <Link href="/register">

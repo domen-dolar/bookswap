@@ -20,18 +20,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
 
       authorize: async (credentials) => {
-        const email = credentials.email;
-        const password = <string>credentials.password;
+        const identifier = credentials.email;
 
         const user = await client.fetch(
-          `*[_type == "users" && email == $email][0]{
+          `*[_type == "users" && (email == $identifier || name == $identifier)][0]{
             _id, name, email, password
           }`,
-          { email },
+          { identifier },
         );
         if (!user) return null;
 
-        const validPassword = await bcrypt.compare(password, user.password);
+        const validPassword = await bcrypt.compare(
+          <string>credentials.password,
+          user.password,
+        );
         if (!validPassword) return null;
 
         return {

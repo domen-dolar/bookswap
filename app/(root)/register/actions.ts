@@ -13,11 +13,14 @@ export async function registerUser(formData: FormData) {
   if (repeatPassword !== password) return { error: "Gesli se morata ujemati!" };
 
   const userExists = await client.fetch(
-    `*[_type == "users" && email == $email][0]`,
-    { email },
+    `*[_type == "users" && (email == $email || name == $username)][0]`,
+    { email, username },
   );
 
-  if (userExists) return { error: "Uporabnik s to e - pošto že obstaja!" };
+  if (userExists)
+    return {
+      error: "Uporabnik s to e - pošto ali uporabniškim imenom že obstaja!",
+    };
 
   const hashedPassword = await bcrypt.hash(password, 10);
 

@@ -3,10 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { logIn } from "./actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+  const [error, setError] = useState<string>();
+  const router = useRouter();
+
   async function handleLogin(provider: string, formData?: FormData) {
-    await logIn(provider, formData);
+    const signIn = await logIn(provider, formData);
+
+    if (signIn?.error) {
+      setError(signIn.error);
+    } else {
+      router.push("/");
+      router.refresh();
+    }
   }
 
   return (
@@ -15,7 +27,10 @@ const Login = () => {
         <h1 className="text-3xl text-center">Prijava</h1>
 
         <div className="authFormDiv">
-          <form className="space-y-5">
+          <form
+            action={(formData) => handleLogin("credentials", formData)}
+            className="space-y-5"
+          >
             <div className="flex flex-col">
               <label htmlFor="identifier">Uporabniško ime ali e-pošta</label>
               <input
@@ -34,6 +49,11 @@ const Login = () => {
                 className="formTextInput"
               />
             </div>
+            {error && (
+              <div>
+                <p className="text-red-500 text-center">{error}</p>
+              </div>
+            )}
             <div className="flex justify-center">
               <button className="btn min-w-30">Prijavi se</button>
             </div>
