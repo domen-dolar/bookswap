@@ -19,22 +19,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
 
+      //  custom authorize logic:
       authorize: async (credentials) => {
         const identifier = credentials.email;
 
+        //  search for identifier (which can either be an email or username) in the DB
         const user = await client.fetch(
           `*[_type == "users" && (email == $identifier || name == $identifier)][0]{
-            _id, name, email, password
+            _id, name, email, password, provider
           }`,
           { identifier },
         );
         if (!user) return null;
 
-        const validPassword = await bcrypt.compare(
-          <string>credentials.password,
-          user.password,
-        );
-        if (!validPassword) return null;
+        if (user.provider === "credentials") {
+          //  compare password entered by user to a password in the DB
+          const validPassword = await bcrypt.compare(
+            <string>credentials.password,
+            user.password,
+          );
+          if (!validPassword) return null;
+        }
 
         return {
           id: user._id,
@@ -45,4 +50,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Google,
   ],
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const email = user.email;
+        const credentialsUserExists = await client.fetch(
+          `*[_type == "users" && email == $email && provider == "credentials"][0]`,
+          { email },
+        );
+
+        if (credentialsUserExists) {
+          return "/login?error=googleLogin";
+        } else {
+          const googleUserExists = await client.fetch(
+            `*[_type == "users" && email == $email && provider == "google"][0]`,
+            { email },
+          );
+
+          if (googleUserExists) {
+            //sign the user in
+            return true;
+          } else {
+            //make a new user in DB and sign them in
+            await client.create({
+              _type: "users",
+              name: user.name,
+              email,
+              provider: "google",
+            });
+
+            return true;
+          }
+        }
+      }
+
+      return true;
+    },
+  },
+  pages: {
+    error: "/login",
+  },
 });

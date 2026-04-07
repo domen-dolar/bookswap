@@ -18,6 +18,14 @@ export default defineType({
       type: "string",
       hidden: true,
     }),
+    defineField({
+      name: "provider",
+      type: "string",
+      options: {
+        list: ["credentials", "google"],
+      },
+      readOnly: true,
+    }),
   ],
   preview: {
     select: {

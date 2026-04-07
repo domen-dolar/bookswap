@@ -29,6 +29,7 @@ export async function registerUser(formData: FormData) {
     name: username,
     email,
     password: hashedPassword,
+    provider: "credentials",
   });
 
   await signIn("credentials", {

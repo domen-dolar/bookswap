@@ -3,12 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { logIn } from "./actions";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Login = () => {
   const [error, setError] = useState<string>();
   const router = useRouter();
+
+  const params = useSearchParams();
+  const signInError = params.get("error");
+
+  useEffect(() => {
+    if (signInError === "googleLogin")
+      setError("Poskusite se prijaviti drugače kot z Googlom!");
+  }, [signInError]);
 
   async function handleLogin(provider: string, formData?: FormData) {
     const signIn = await logIn(provider, formData);
