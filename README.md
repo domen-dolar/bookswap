@@ -4,6 +4,7 @@
   - username
   - email
   - password
+  - provider
 
 - Books
   - title
@@ -28,7 +29,7 @@
 
 - Chats
   - message
-  - time
+  - timestamp
   - book id
   - messenger id
   - receiver id
