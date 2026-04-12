@@ -14,11 +14,11 @@ const Register = () => {
   }
 
   return (
-    <div className="authPage">
-      <div className="authOuterDiv">
+    <div className="auth-page">
+      <div className="auth-outer-div">
         <h1 className="text-3xl text-center">Registracija</h1>
 
-        <div className="authFormDiv">
+        <div className="auth-form-div">
           <form
             action={(FormData) => handleSubmit(FormData)}
             className="space-y-5"
@@ -29,7 +29,7 @@ const Register = () => {
                 type="text"
                 id="username"
                 name="username"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>
@@ -39,7 +39,7 @@ const Register = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>
@@ -49,7 +49,7 @@ const Register = () => {
                 type="password"
                 id="password"
                 name="password"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>
@@ -59,7 +59,7 @@ const Register = () => {
                 type="password"
                 id="repeatPassword"
                 name="repeatPassword"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>

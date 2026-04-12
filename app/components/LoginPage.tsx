@@ -30,11 +30,11 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="authPage">
-      <div className="authOuterDiv">
+    <div className="auth-page">
+      <div className="auth-outer-div">
         <h1 className="text-3xl text-center">Prijava</h1>
 
-        <div className="authFormDiv">
+        <div className="auth-form-div">
           <form
             action={(formData) => handleLogin("credentials", formData)}
             className="space-y-5"
@@ -45,7 +45,7 @@ const LoginPage = () => {
                 type="text"
                 id="identifier"
                 name="identifier"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>
@@ -55,7 +55,7 @@ const LoginPage = () => {
                 type="password"
                 id="password"
                 name="password"
-                className="formTextInput"
+                className="form-text-input"
                 required
               />
             </div>
