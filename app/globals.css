@@ -89,4 +89,8 @@ h2 {
   .my-message {
     @apply text-center items-center space-y-5 sm:text-left sm:space-y-0 sm:grid sm:grid-cols-3;
   }
+
+  .update-user-submit {
+    @apply space-y-3 sm:space-y-0 sm:flex sm:justify-end sm:space-x-3;
+  }
 }

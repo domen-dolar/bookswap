@@ -84,7 +84,7 @@ const EditUserProfileInfo = ({ user }: { user: Session["user"] }) => {
           </div>
         </div>
 
-        <div className="space-y-3 sm:space-y-0 sm:flex sm:justify-end sm:space-x-3">
+        <div className="update-user-submit">
           <p className={`flex items-center justify-center ${responseColor}`}>
             {response}
           </p>
