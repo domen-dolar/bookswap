@@ -86,6 +86,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
+    async jwt({ token, trigger, session }) {
+      if (trigger === "update" && session?.user) {
+        token.name = session.user.name;
+        token.email = session.user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
   },
   pages: {
     error: "/login",
