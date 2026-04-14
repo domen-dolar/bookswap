@@ -16,7 +16,7 @@ const Register = () => {
   return (
     <div className="auth-page">
       <div className="auth-outer-div">
-        <h1 className="text-3xl text-center">Registracija</h1>
+        <h1>Registracija</h1>
 
         <div className="auth-form-div">
           <form

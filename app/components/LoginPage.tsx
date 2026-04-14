@@ -32,7 +32,7 @@ const LoginPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-outer-div">
-        <h1 className="text-3xl text-center">Prijava</h1>
+        <h1>Prijava</h1>
 
         <div className="auth-form-div">
           <form

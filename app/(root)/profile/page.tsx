@@ -19,7 +19,7 @@ const Profile = async () => {
   return (
     <SessionProvider session={session}>
       <div className="main">
-        <h1 className="text-2xl text-center">Moj profil</h1>
+        <h1>Moj profil</h1>
 
         {!isGoogleUser && <EditUserProfileInfo user={session.user} />}
 
