@@ -40,6 +40,7 @@ jobs:
             rm -rf .next
 
             echo "📦 Installing dependencies..."
+            npm install
             npm ci
 
             echo "⚙️ Rebuilding Next.js app..."
