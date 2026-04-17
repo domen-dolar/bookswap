@@ -100,4 +100,15 @@ h2 {
   .form-new-book-inputs {
     @apply space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-15;
   }
+
+  .hide-input {
+    @apply absolute opacity-0 mt-10 -z-10;
+  }
+
+  .image-preview-swiper {
+    @apply rounded-md w-full h-80 mt-5 bg-white;
+
+    --swiper-navigation-color: var(--color-secondary);
+    --swiper-pagination-color: var(--color-secondary);
+  }
 }
