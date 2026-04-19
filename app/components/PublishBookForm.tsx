@@ -8,6 +8,7 @@ const PublishBookForm = () => {
   const [response, setResponse] = useState<string>();
   const [responseColor, setResponseColor] = useState<string>();
   const [resetImages, setResetImages] = useState(false);
+  const [publishing, setPublishing] = useState(false);
 
   const genres = [
     "Biografije",
@@ -41,6 +42,7 @@ const PublishBookForm = () => {
   ];
 
   async function handleSubmit(formData: FormData) {
+    setPublishing(true);
     const publish = await publishBook(formData);
 
     if (publish.success) {
@@ -51,11 +53,17 @@ const PublishBookForm = () => {
       setResponse("Knjigo s tem naslovom ste že objavili!");
       setResponseColor("text-red-500");
     }
+    setPublishing(false);
   }
 
   return (
     <form
-      action={(formData) => handleSubmit(formData)}
+      onSubmit={async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        await handleSubmit(formData);
+      }}
       className="flex flex-col space-y-5"
     >
       <div className="form-new-book-inputs">
@@ -132,7 +140,12 @@ const PublishBookForm = () => {
 
       <div className={`text-center ${responseColor}`}>
         {response && <p>{response}</p>}
-        <button className="btn w-full sm:w-50">Objavi knjigo</button>
+        <button
+          disabled={publishing}
+          className="btn w-full sm:w-50 disabled:cursor-not-allowed!"
+        >
+          {publishing ? "Objavljanje..." : "Objavi knjigo"}
+        </button>
       </div>
     </form>
   );

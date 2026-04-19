@@ -24,6 +24,7 @@ export async function publishBook(formData: FormData) {
   const imageRefs = imageAssets.map((asset) => ({
     _key: crypto.randomUUID(),
     _type: "image",
+    url: asset.url,
     asset: {
       _type: "reference",
       _ref: asset._id,
