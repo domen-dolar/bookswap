@@ -82,7 +82,7 @@ h2 {
   }
 
   .my-book-title {
-    @apply text-lg flex items-center text-center sm:w-2/3;
+    @apply text-lg flex items-center justify-center sm:w-2/3;
   }
 
   .my-book-image {
@@ -126,5 +126,21 @@ h2 {
 
   .book-info {
     @apply flex flex-col justify-between text-center sm:text-left;
+  }
+
+  .book-details {
+    @apply sm:grid sm:grid-cols-2 gap-5 text-lg text-center;
+  }
+
+  .book-details-text-owner {
+    @apply flex flex-col items-center space-y-5 mt-5;
+  }
+
+  .book-details-text {
+    @apply w-full sm:w-2/3 h-full flex flex-col justify-between;
+  }
+
+  .book-details-owner {
+    @apply flex items-center justify-between w-full;
   }
 }

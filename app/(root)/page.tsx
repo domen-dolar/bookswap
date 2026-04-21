@@ -1,6 +1,7 @@
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import Image from "next/image";
 import GenreFilter from "../components/GenreFilter";
+import Link from "next/link";
 
 const Home = async () => {
   const { data: books } = await sanityFetch({ query: `*[_type == "books"]` });
@@ -24,6 +25,7 @@ const Home = async () => {
                 publishmentYear: number;
                 publishedAt: string;
                 genre: string;
+                _id: string;
               }) => (
                 <li key={book.title} className="section-secondary book">
                   <Image
@@ -42,7 +44,11 @@ const Home = async () => {
                   </div>
 
                   <div className="flex sm:items-center justify-center">
-                    <button className="btn w-full sm:w-50">Podrobnosti</button>
+                    <Link href={`/book-details/${book._id}`}>
+                      <button className="btn w-full sm:w-50">
+                        Podrobnosti
+                      </button>
+                    </Link>
                   </div>
                 </li>
               ),
