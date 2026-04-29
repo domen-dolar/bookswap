@@ -2,10 +2,8 @@ import BookImageSwiper from "@/app/components/BookImageSwiper";
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
 import CommentAndRate from "@/app/components/CommentAndRate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
-import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import CurrentRating from "@/app/components/CurrentRating";
 
 export const revalidate = 0;
 
@@ -50,6 +48,17 @@ const BookDetails = async ({
     }`,
     params: { bookID },
   });
+
+  const { data: ratings } = await sanityFetch({
+    query: `*[_type == "ratings" && book._ref == $bookID]{
+      rating
+    }`,
+    params: { bookID },
+  });
+
+  let sumOfRatings = 0;
+  ratings.map((rating: { rating: number }) => (sumOfRatings += rating.rating));
+  const averageRating = Math.round((sumOfRatings / ratings.length) * 2) / 2;
 
   return (
     <div className="main">
@@ -101,15 +110,11 @@ const BookDetails = async ({
           <CommentAndRate bookID={bookID} />
 
           <div className="sm:flex">
-            <h2 className="current-rating">Trenutna ocena knjige:</h2>
+            <h2 className="current-rating">
+              Trenutna ocena knjige ({ratings.length} ocen):
+            </h2>
 
-            <div className="current-rating-stars">
-              <FontAwesomeIcon icon={faStarRegular} className="size-10!" />
-              <FontAwesomeIcon icon={faStarRegular} className="size-10!" />
-              <FontAwesomeIcon icon={faStarRegular} className="size-10!" />
-              <FontAwesomeIcon icon={faStarRegular} className="size-10!" />
-              <FontAwesomeIcon icon={faStarRegular} className="size-10!" />
-            </div>
+            <CurrentRating averageRating={averageRating} />
           </div>
 
           <div>

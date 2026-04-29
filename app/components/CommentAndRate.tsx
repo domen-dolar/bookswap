@@ -4,7 +4,7 @@ import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { commentBook } from "../(root)/book-details/[bookID]/actions";
+import { commentBook, rateBook } from "../(root)/book-details/[bookID]/actions";
 
 const CommentAndRate = ({ bookID }: { bookID: string }) => {
   const [star1Hovered, setStar1Hovered] = useState(faStarRegular);
@@ -24,8 +24,18 @@ const CommentAndRate = ({ bookID }: { bookID: string }) => {
   const [commentResponse, setCommentResponse] = useState<string>();
   const [commentResponseColor, setCommentResponseColor] = useState<string>();
 
+  const [ratingResponse, setRatingResponse] = useState<string>();
+  const [ratingResponseColor, setRatingResponseColor] = useState<string>();
+
   function rate(rating: number) {
     switch (rating) {
+      case 0:
+        setIcon1(faStarRegular);
+        setIcon2(faStarRegular);
+        setIcon3(faStarRegular);
+        setIcon4(faStarRegular);
+        setIcon5(faStarRegular);
+        break;
       case 1:
         if (icon1 === faStarSolid && icon2 === faStarRegular) {
           setRating(0);
@@ -161,6 +171,20 @@ const CommentAndRate = ({ bookID }: { bookID: string }) => {
     }
   }
 
+  async function handleRateSubmit(formData: FormData) {
+    const rating = Number(formData.get("rating"));
+
+    const response = await rateBook(bookID, rating);
+
+    if (response?.error) {
+      setRatingResponse(response.error);
+      setRatingResponseColor("text-red-500");
+    } else {
+      setRatingResponse(response.success);
+      setRatingResponseColor("text-green-500");
+    }
+  }
+
   return (
     <div className="book-details text-left!">
       <form
@@ -197,7 +221,19 @@ const CommentAndRate = ({ bookID }: { bookID: string }) => {
           <button className="btn w-full sm:w-auto">Komentiraj</button>
         </div>
       </form>
-      <form className="space-y-5">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.currentTarget);
+
+          handleRateSubmit(formData);
+
+          e.currentTarget.reset();
+          rate(0);
+        }}
+        className="space-y-5"
+      >
         <div className="sm:h-2/3">
           <label className="text-lg">Oceni knjigo:</label>
 
@@ -261,7 +297,12 @@ const CommentAndRate = ({ bookID }: { bookID: string }) => {
           className="hidden"
         />
 
-        <div className="flex justify-end items-center">
+        <div className="flex-col sm:flex sm:flex-row justify-end items-center gap-3">
+          {ratingResponse && (
+            <p className={`text-center ${ratingResponseColor}`}>
+              {ratingResponse}
+            </p>
+          )}
           <button className="btn w-full sm:w-auto">Oceni</button>
         </div>
       </form>

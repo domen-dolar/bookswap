@@ -20,4 +20,9 @@ export default defineType({
       to: [{ type: "users" }],
     }),
   ],
+  preview: {
+    select: {
+      title: "rating",
+    },
+  },
 });
