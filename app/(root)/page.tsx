@@ -3,6 +3,8 @@ import Image from "next/image";
 import GenreFilter from "../components/GenreFilter";
 import Link from "next/link";
 
+export const revalidate = 0;
+
 const Home = async () => {
   const { data: books } = await sanityFetch({ query: `*[_type == "books"]` });
 
