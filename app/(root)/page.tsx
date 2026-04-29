@@ -5,8 +5,19 @@ import Link from "next/link";
 
 export const revalidate = 0;
 
-const Home = async () => {
-  const { data: books } = await sanityFetch({ query: `*[_type == "books"]` });
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ genre?: string }>;
+}) => {
+  const params = await searchParams;
+
+  const genre = params.genre || null;
+
+  const { data: books } = await sanityFetch({
+    query: `*[_type == "books" && (!defined($genre) || genre match $genre)]`,
+    params: { genre },
+  });
 
   return (
     <div className="main">
@@ -17,7 +28,7 @@ const Home = async () => {
       <div className="section-primary">
         <h2>Knjige, na voljo za menjavo</h2>
 
-        {books ? (
+        {books.length > 0 ? (
           <ul className="space-y-3">
             {books.map(
               (book: {

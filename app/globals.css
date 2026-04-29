@@ -113,7 +113,7 @@ h2 {
   }
 
   .genre-filter {
-    @apply flex flex-col sm:flex-row space-y-5 sm:space-y-0 sm:space-x-5;
+    @apply flex flex-col sm:flex-row gap-5;
   }
 
   .book {
