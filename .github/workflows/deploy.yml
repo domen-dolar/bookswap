@@ -47,7 +47,7 @@ jobs:
             npm run build
 
             echo "🚀 Restarting PM2 process..."
-            PORT=3002 pm2 reload bookswap || pm2 start npm --name "bookswap" -- start
+            PORT=3002 pm2 reload bookswap || pm2 start npm --name "bookswap" -- start -- -H 0.0.0.0
             pm2 save
 
             echo "✅ Deployment completed successfully!"
