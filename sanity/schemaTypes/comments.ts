@@ -21,7 +21,12 @@ export default defineType({
     defineField({
       name: "book",
       type: "reference",
-      to: [{ type: "users" }],
+      to: [{ type: "books" }],
     }),
   ],
+  preview: {
+    select: {
+      title: "comment",
+    },
+  },
 });

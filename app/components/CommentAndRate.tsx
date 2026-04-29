@@ -4,8 +4,9 @@ import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { commentBook } from "../(root)/book-details/[bookID]/actions";
 
-const CommentAndRate = () => {
+const CommentAndRate = ({ bookID }: { bookID: string }) => {
   const [star1Hovered, setStar1Hovered] = useState(faStarRegular);
   const [star2Hovered, setStar2Hovered] = useState(faStarRegular);
   const [star3Hovered, setStar3Hovered] = useState(faStarRegular);
@@ -19,6 +20,9 @@ const CommentAndRate = () => {
   const [icon3, setIcon3] = useState(faStarRegular);
   const [icon4, setIcon4] = useState(faStarRegular);
   const [icon5, setIcon5] = useState(faStarRegular);
+
+  const [commentResponse, setCommentResponse] = useState<string>();
+  const [commentResponseColor, setCommentResponseColor] = useState<string>();
 
   function rate(rating: number) {
     switch (rating) {
@@ -143,9 +147,33 @@ const CommentAndRate = () => {
     }
   }, [star5Hovered]);
 
+  async function handleCommentSubmit(formData: FormData) {
+    const comment = formData.get("comment") as string;
+
+    const response = await commentBook(bookID, comment);
+
+    if (response?.error) {
+      setCommentResponse(response.error);
+      setCommentResponseColor("text-red-500");
+    } else {
+      setCommentResponse(response.success);
+      setCommentResponseColor("text-green-500");
+    }
+  }
+
   return (
     <div className="book-details text-left!">
-      <form className="space-y-5">
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+
+          handleCommentSubmit(formData);
+
+          e.currentTarget.reset();
+        }}
+        className="space-y-5"
+      >
         <div className="sm:h-2/3">
           <label htmlFor="comment" className="text-lg">
             Komentiraj knjigo:
@@ -160,7 +188,12 @@ const CommentAndRate = () => {
           ></textarea>
         </div>
 
-        <div className="flex justify-end items-center">
+        <div className="flex-col sm:flex sm:flex-row justify-end items-center gap-3">
+          {commentResponse && (
+            <p className={`text-center ${commentResponseColor}`}>
+              {commentResponse}
+            </p>
+          )}
           <button className="btn w-full sm:w-auto">Komentiraj</button>
         </div>
       </form>

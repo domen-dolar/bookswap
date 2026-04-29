@@ -5,6 +5,9 @@ import CommentAndRate from "@/app/components/CommentAndRate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+
+export const revalidate = 0;
 
 const BookDetails = async ({
   params,
@@ -38,7 +41,15 @@ const BookDetails = async ({
     { ownerID },
   );
 
-  const hasComments = false;
+  const { data: comments } = await sanityFetch({
+    query: `*[_type == "comments" && book._ref == $bookID] | order(timestamp desc) {
+      "commentator": commentator->name,
+      comment,
+      timestamp,
+      _id
+    }`,
+    params: { bookID },
+  });
 
   return (
     <div className="main">
@@ -87,7 +98,7 @@ const BookDetails = async ({
         <h2>Ocena in komentarji knjige</h2>
 
         <div className="space-y-10">
-          <CommentAndRate />
+          <CommentAndRate bookID={bookID} />
 
           <div className="sm:flex">
             <h2 className="current-rating">Trenutna ocena knjige:</h2>
@@ -105,11 +116,25 @@ const BookDetails = async ({
             <h2>Komentarji:</h2>
 
             <ul className="space-y-5">
-              {hasComments ? (
-                <li>
-                  <p>Uporabnik</p>
-                  <div className="section-secondary bg-tertiary/60!"></div>
-                </li>
+              {comments.length > 0 ? (
+                comments.map(
+                  (comment: {
+                    commentator: string;
+                    comment: string;
+                    timestamp: string;
+                    _id: string;
+                  }) => (
+                    <li key={comment._id}>
+                      <div className="flex justify-between">
+                        <p>{comment.commentator}</p>
+                        <p>{new Date(comment.timestamp).toLocaleString()}</p>
+                      </div>
+                      <div className="section-secondary bg-tertiary/60!">
+                        {comment.comment}
+                      </div>
+                    </li>
+                  ),
+                )
               ) : (
                 <p>Ta knjiga še nima komentarjev.</p>
               )}
@@ -117,6 +142,7 @@ const BookDetails = async ({
           </div>
         </div>
       </div>
+      <SanityLive />
     </div>
   );
 };
