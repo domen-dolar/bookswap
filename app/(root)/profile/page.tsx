@@ -68,6 +68,7 @@ const Profile = async () => {
               <ul className="space-y-3">
                 {books.map(
                   (book: {
+                    _id: string;
                     title: string;
                     images: [{ url: string }];
                     author?: string;
@@ -94,9 +95,11 @@ const Profile = async () => {
                           </p>
                         </div>
 
-                        <button className="btn w-full sm:w-50">
-                          Podrobnosti
-                        </button>
+                        <Link href={`/book-details-owner/${book._id}`}>
+                          <button className="btn w-full sm:w-50">
+                            Podrobnosti
+                          </button>
+                        </Link>
                       </div>
                     </li>
                   ),
