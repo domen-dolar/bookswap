@@ -2,7 +2,7 @@
 
 import { Session } from "next-auth";
 import updateUserData from "../(root)/profile/actions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -29,6 +29,13 @@ const EditUserProfileInfo = ({ user }: { user: Session["user"] }) => {
       router.refresh();
     }
   }
+
+  useEffect(() => {
+    if (user?.image)
+      setResponse(
+        "Zaradi prijave z Googlom svojih podatkov ne morete spreminjati!",
+      );
+  });
 
   return (
     <div className="section-primary mt-10">
@@ -85,10 +92,12 @@ const EditUserProfileInfo = ({ user }: { user: Session["user"] }) => {
         </div>
 
         <div className="update-user-submit">
-          <p className={`flex items-center justify-center ${responseColor}`}>
+          <p className={`flex items-center text-center ${responseColor}`}>
             {response}
           </p>
-          <button className="btn w-full sm:w-30">Potrdi</button>
+          <button disabled={!!user?.image} className="btn btn-disabled">
+            Potrdi
+          </button>
         </div>
       </form>
     </div>

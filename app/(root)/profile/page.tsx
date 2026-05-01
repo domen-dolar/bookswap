@@ -1,10 +1,13 @@
 import EditUserProfileInfo from "@/app/components/EditUserProfileInfo";
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
+export const revalidate = 0;
 
 const Profile = async () => {
   const session = await auth();
@@ -16,7 +19,8 @@ const Profile = async () => {
   const email = session?.user?.email;
   const user = await client.fetch(
     `*[_type == "users" && email == $email][0]{
-        _id
+        _id,
+        name
     }`,
     { email },
   );
@@ -27,20 +31,36 @@ const Profile = async () => {
     { ownerID },
   );
 
-  const hasMessages = false;
+  const { data: chats } = await sanityFetch({
+    query: `*[_type == "chats" && (receiver._ref == $ownerID || messenger._ref == $ownerID)] | order(_updatedAt desc) {
+      _id,
+      _updatedAt,
+      "messenger": messenger->name,
+      "receiver": receiver->name,
+      "book": book->{ _id, title}
+    }`,
+    params: { ownerID },
+  });
+
+  const messages = Array.from(
+    new Map(
+      chats.map((chat: any) => {
+        const [a, b] = [chat.messenger, chat.receiver].sort();
+
+        const key = `${a}-${b}-${chat.book._id}`;
+        return [key, chat];
+      }),
+    ).values(),
+  );
 
   return (
     <SessionProvider session={session}>
       <div className="main">
         <h1>Moj profil</h1>
 
-        {!isGoogleUser && <EditUserProfileInfo user={session.user} />}
+        <EditUserProfileInfo user={session.user} />
 
-        <div
-          className={
-            !isGoogleUser ? "section-primary" : "section-primary mt-10"
-          }
-        >
+        <div className="section-primary">
           <h2>Moje knjige</h2>
 
           <div className="space-y-5">
@@ -99,22 +119,36 @@ const Profile = async () => {
         <div className="section-primary">
           <h2>Sporočila</h2>
 
-          {hasMessages ? (
+          {messages ? (
             <ul className="space-y-5">
-              <li className="section-secondary my-message">
-                <p className="text-lg h-fit">Od: {}</p>
+              {messages.map((message: any) => (
+                <li key={message._id} className="section-secondary my-message">
+                  <p className="text-lg h-fit">
+                    {message.messenger === user.name
+                      ? `Za: ${message.receiver}`
+                      : `Od: ${message.messenger}`}
+                  </p>
 
-                <p className="text-lg h-fit">Knjiga: {}</p>
+                  <p className="text-lg h-fit">Knjiga: {message.book.title}</p>
 
-                <Link href={`/reply`} className="sm:flex sm:justify-end">
-                  <button className="btn w-full sm:w-50">Odgovori</button>
-                </Link>
-              </li>
+                  <Link
+                    href={
+                      message.messenger === user.name
+                        ? `/book-details/${message.book._id}/message`
+                        : `/reply/${message.book._id}`
+                    }
+                    className="sm:flex sm:justify-end"
+                  >
+                    <button className="btn w-full sm:w-50">Piši</button>
+                  </Link>
+                </li>
+              ))}
             </ul>
           ) : (
             <p>Nimate sporočil.</p>
           )}
         </div>
+        <SanityLive />
       </div>
     </SessionProvider>
   );

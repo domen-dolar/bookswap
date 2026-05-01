@@ -2,14 +2,14 @@
 
 import { faArrowAltCircleUp } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { messageOwner } from "../(root)/book-details/[bookID]/message/actions";
+import { messageReceiver } from "../(root)/book-details/[bookID]/message/actions";
 
 const MessageForm = ({
   bookID,
-  ownerID,
+  receiverID,
 }: {
   bookID: string;
-  ownerID: string;
+  receiverID: string;
 }) => {
   return (
     <form
@@ -18,7 +18,7 @@ const MessageForm = ({
         const formData = new FormData(e.currentTarget);
         const message = formData.get("message") as string;
 
-        messageOwner(message, bookID, ownerID);
+        messageReceiver(message, bookID, receiverID);
 
         e.currentTarget.reset();
       }}

@@ -3,10 +3,10 @@
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
 
-export async function messageOwner(
+export async function messageReceiver(
   message: string,
   bookID: string,
-  ownerID: string,
+  receiverID: string,
 ) {
   const session = await auth();
   const email = session?.user?.email;
@@ -24,6 +24,6 @@ export async function messageOwner(
     timestamp: new Date().toISOString(),
     book: { _type: "reference", _ref: bookID },
     messenger: { _type: "reference", _ref: user._id },
-    receiver: { _type: "reference", _ref: ownerID },
+    receiver: { _type: "reference", _ref: receiverID },
   });
 }

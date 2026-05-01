@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 export const revalidate = 0;
 
-const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
+const Reply = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   const session = await auth();
   if (!session) redirect("/");
 
@@ -15,10 +15,7 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   const book = await client.fetch(
     `*[_type == "books" && _id == $bookID][0]{
         title,
-        "owner": owner->{ 
-          name,
-          _id
-        },
+        "owner": owner->name
     }`,
     { bookID },
   );
@@ -26,10 +23,10 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   if (!book) redirect("/");
 
   const { data: messages } = await sanityFetch({
-    query: `*[_type == "chats" && book._ref == $bookID] | order(_updatedAt asc){
+    query: `*[_type == "chats" && book._ref == $bookID]{
       _id,
       message,
-      "messenger": messenger->name,
+      "messenger": messenger->{ _id, name },
       timestamp
     }`,
     params: { bookID },
@@ -37,30 +34,28 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
 
   return (
     <div className="main h-full min-h-0">
-      <h1>Piši lastniku</h1>
-
+      <h1>Odgovori</h1>
       <div className="section-primary section-messaging">
         <h2>
-          {book.owner.name}: {book.title}
+          {book.owner}: {book.title}
         </h2>
-
         <div className="section-messaging-inner">
           <div className="section-messaging-scrollable">
             <ul className="space-y-3 flex flex-col">
               {messages.map(
                 (message: {
                   message: string;
-                  messenger: string;
+                  messenger: { name: string };
                   timestamp: string;
                   _id: string;
                 }) =>
-                  message.messenger == session.user?.name ? (
+                  message.messenger.name === session.user?.name ? (
                     <li key={message._id}>
                       <p className="text-center">
                         {new Date(message.timestamp).toLocaleString()}
                       </p>
                       <div className="flex flex-col items-end">
-                        <p>{message.messenger}</p>
+                        <p>{message.messenger.name}</p>
                         <div className="section-secondary message">
                           {message.message}
                         </div>
@@ -71,7 +66,7 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
                       <p className="text-center">
                         {new Date(message.timestamp).toLocaleString()}
                       </p>
-                      <p>{book.owner.name}</p>
+                      <p>{message.messenger.name}</p>
                       <div className="section-secondary message">
                         {message.message}
                       </div>
@@ -81,7 +76,10 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
             </ul>
           </div>
           <div className="flex justify-center mt-5">
-            <MessageForm bookID={bookID} receiverID={book.owner._id} />
+            <MessageForm
+              bookID={bookID}
+              receiverID={messages[0].messenger._id}
+            />
           </div>
         </div>
       </div>
@@ -89,4 +87,4 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
     </div>
   );
 };
-export default Message;
+export default Reply;
