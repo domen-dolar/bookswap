@@ -159,4 +159,36 @@ h2 {
   .rate-inner {
     @apply w-full sm:w-4/5 flex justify-around h-10;
   }
+
+  .message-button {
+    @apply flex flex-col sm:flex-row gap-3 items-center;
+  }
+
+  .section-messaging {
+    @apply mt-10 h-full min-h-0 flex flex-col;
+  }
+
+  .section-messaging-inner {
+    @apply bg-white border border-tertiary rounded-lg p-5 h-full min-h-0 flex flex-col;
+  }
+
+  .section-messaging-scrollable {
+    @apply h-full min-h-0 overflow-auto flex flex-col-reverse;
+  }
+
+  .message {
+    @apply bg-tertiary/60! w-fit max-w-1/2;
+  }
+
+  .new-message {
+    @apply border-2 rounded-full w-full sm:w-4/5 flex;
+  }
+
+  .message-input {
+    @apply w-full h-10 pl-3 outline-none text-lg;
+  }
+
+  .submit-message {
+    @apply size-8! hover:cursor-pointer hover:scale-110 transition;
+  }
 }

@@ -4,6 +4,8 @@ import { client } from "@/sanity/lib/client";
 import CommentAndRate from "@/app/components/CommentAndRate";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import CurrentRating from "@/app/components/CurrentRating";
+import { redirect } from "next/navigation";
+import MessageOwner from "@/app/components/MessageOwner";
 
 export const revalidate = 0;
 
@@ -31,6 +33,8 @@ const BookDetails = async ({
   const book = await client.fetch(`*[_type == "books" && _id == $bookID][0]`, {
     bookID,
   });
+
+  if (!book) redirect("/");
 
   const ownerID = book.owner._ref;
 
@@ -95,9 +99,8 @@ const BookDetails = async ({
                 Lastnik: {owner.name}
                 {userID === ownerID && " (Vi)"}
               </div>
-              <div>
-                <button className="btn">Piši lastniku</button>
-              </div>
+
+              <MessageOwner bookID={bookID} userID={userID} ownerID={ownerID} />
             </div>
           </div>
         </div>
