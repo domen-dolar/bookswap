@@ -189,6 +189,6 @@ h2 {
   }
 
   .submit-message {
-    @apply size-8! hover:cursor-pointer hover:scale-110 transition;
+    @apply size-8! hover:cursor-pointer hover:scale-110 transition align-middle!;
   }
 }

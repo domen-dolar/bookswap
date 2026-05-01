@@ -1,8 +1,10 @@
+import MessageForm from "@/app/components/MessageForm";
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
-import { faArrowAltCircleUp } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { redirect } from "next/navigation";
+
+export const revalidate = 0;
 
 const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   const session = await auth();
@@ -13,12 +15,25 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   const book = await client.fetch(
     `*[_type == "books" && _id == $bookID][0]{
         title,
-        "owner": owner->name
+        "owner": owner->{ 
+          name,
+          _id
+        },
     }`,
     { bookID },
   );
 
   if (!book) redirect("/");
+
+  const { data: messages } = await sanityFetch({
+    query: `*[_type == "chats" && book._ref == $bookID]{
+      _id,
+      message,
+      "messenger": messenger->name,
+      timestamp
+    }`,
+    params: { bookID },
+  });
 
   return (
     <div className="main h-full min-h-0">
@@ -26,51 +41,51 @@ const Message = async ({ params }: { params: Promise<{ bookID: string }> }) => {
 
       <div className="section-primary section-messaging">
         <h2>
-          {book.owner}: {book.title}
+          {book.owner.name}: {book.title}
         </h2>
 
         <div className="section-messaging-inner">
           <div className="section-messaging-scrollable">
             <ul className="space-y-3 flex flex-col">
-              <li className="flex flex-col items-end">
-                <p>jaz</p>
-                <div className="section-secondary message">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Magnam ut eos deserunt id et incidunt fugit fugiat atque
-                  commodi, nulla aliquam recusandae nemo laboriosam blanditiis
-                  voluptatem corporis! Et, natus quis.
-                </div>
-              </li>
-              <li>
-                <p>{book.owner}</p>
-                <div className="section-secondary message">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Neque repellat exercitationem eaque autem in ab repudiandae
-                  temporibus similique culpa sunt ipsa debitis quaerat
-                  perferendis ad eos necessitatibus consectetur, aperiam
-                  molestiae.
-                </div>
-              </li>
+              {messages.map(
+                (message: {
+                  message: string;
+                  messenger: string;
+                  timestamp: string;
+                  _id: string;
+                }) =>
+                  message.messenger == session.user?.name ? (
+                    <li key={message._id}>
+                      <p className="text-center">
+                        {new Date(message.timestamp).toLocaleString()}
+                      </p>
+                      <div className="flex flex-col items-end">
+                        <p>{message.messenger}</p>
+                        <div className="section-secondary message">
+                          {message.message}
+                        </div>
+                      </div>
+                    </li>
+                  ) : (
+                    <li key={message._id}>
+                      <p className="text-center">
+                        {new Date(message.timestamp).toLocaleString()}
+                      </p>
+                      <p>{book.owner.name}</p>
+                      <div className="section-secondary message">
+                        {message.message}
+                      </div>
+                    </li>
+                  ),
+              )}
             </ul>
           </div>
           <div className="flex justify-center mt-5">
-            <form action="" className="new-message">
-              <input
-                type="text"
-                name="message"
-                id="message"
-                className="message-input"
-              />
-              <button className="px-1">
-                <FontAwesomeIcon
-                  icon={faArrowAltCircleUp}
-                  className="submit-message"
-                />
-              </button>
-            </form>
+            <MessageForm bookID={bookID} ownerID={book.owner._id} />
           </div>
         </div>
       </div>
+      <SanityLive />
     </div>
   );
 };
