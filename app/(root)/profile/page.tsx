@@ -14,8 +14,6 @@ const Profile = async () => {
 
   if (!session) redirect("/");
 
-  const isGoogleUser = !!session.user?.image;
-
   const email = session?.user?.email;
   const user = await client.fetch(
     `*[_type == "users" && email == $email][0]{
@@ -122,7 +120,7 @@ const Profile = async () => {
         <div className="section-primary">
           <h2>Sporočila</h2>
 
-          {messages ? (
+          {messages.length > 0 ? (
             <ul className="space-y-5">
               {messages.map((message: any) => (
                 <li key={message._id} className="section-secondary my-message">

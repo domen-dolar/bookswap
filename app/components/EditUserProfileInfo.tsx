@@ -95,7 +95,10 @@ const EditUserProfileInfo = ({ user }: { user: Session["user"] }) => {
           <p className={`flex items-center text-center ${responseColor}`}>
             {response}
           </p>
-          <button disabled={!!user?.image} className="btn btn-disabled">
+          <button
+            disabled={!!user?.image}
+            className="btn w-full sm:w-30 disabled:hover:cursor-not-allowed"
+          >
             Potrdi
           </button>
         </div>

@@ -97,10 +97,6 @@ h2 {
     @apply space-y-3 sm:space-y-0 sm:flex sm:justify-end sm:space-x-3;
   }
 
-  .btn-disabled {
-    @apply w-full sm:w-30 disabled:hover:opacity-100 disabled:hover:cursor-default;
-  }
-
   .form-new-book-inputs {
     @apply space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-15;
   }
