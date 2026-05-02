@@ -23,7 +23,7 @@ const Reply = async ({ params }: { params: Promise<{ bookID: string }> }) => {
   if (!book) redirect("/");
 
   const { data: messages } = await sanityFetch({
-    query: `*[_type == "chats" && book._ref == $bookID]{
+    query: `*[_type == "chats" && book._ref == $bookID] | order(_updatedAt){
       _id,
       message,
       "messenger": messenger->{ _id, name },

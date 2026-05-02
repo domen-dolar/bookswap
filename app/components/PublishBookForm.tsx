@@ -61,8 +61,12 @@ const PublishBookForm = () => {
       onSubmit={async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
         await handleSubmit(formData);
+
+        form.reset();
       }}
       className="flex flex-col space-y-5"
     >
@@ -138,7 +142,7 @@ const PublishBookForm = () => {
         <ImageInput reset={resetImages} />
       </div>
 
-      <div className={`text-center ${responseColor}`}>
+      <div className={`text-center space-y-2 ${responseColor}`}>
         {response && <p>{response}</p>}
         <button
           disabled={publishing}
