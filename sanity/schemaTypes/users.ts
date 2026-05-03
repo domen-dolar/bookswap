@@ -26,6 +26,13 @@ export default defineType({
       },
       readOnly: true,
     }),
+    defineField({
+      name: "role",
+      type: "string",
+      options: {
+        list: ["user", "admin"],
+      },
+    }),
   ],
   preview: {
     select: {

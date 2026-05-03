@@ -77,6 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               name: user.name,
               email,
               provider: "google",
+              role: "user",
             });
 
             return true;

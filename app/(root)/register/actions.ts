@@ -30,6 +30,7 @@ export async function registerUser(formData: FormData) {
     email,
     password: hashedPassword,
     provider: "credentials",
+    role: "user",
   });
 
   await signIn("credentials", {

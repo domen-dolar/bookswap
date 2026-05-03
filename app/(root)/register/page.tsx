@@ -20,7 +20,13 @@ const Register = () => {
 
         <div className="auth-form-div">
           <form
-            action={(FormData) => handleSubmit(FormData)}
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              const formData = new FormData(e.currentTarget);
+
+              handleSubmit(formData);
+            }}
             className="space-y-5"
           >
             <div className="flex flex-col">
