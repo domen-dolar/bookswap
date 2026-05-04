@@ -33,7 +33,19 @@ const BookDetailsOwner = async ({
 
   const session = await auth();
 
-  if (book.owner !== session?.user?.name) redirect("/");
+  const email = session?.user?.email;
+
+  const user = await client.fetch(
+    `*[_type == "users" && email == $email][0]{
+            role
+        }`,
+    { email },
+  );
+  const role = user.role;
+
+  if (role !== "admin") {
+    if (book.owner !== session?.user?.name) redirect("/");
+  }
 
   const { data: ratings } = await sanityFetch({
     query: `*[_type == "ratings" && book._ref == $bookID]{

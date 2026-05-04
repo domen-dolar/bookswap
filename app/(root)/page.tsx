@@ -15,7 +15,7 @@ const Home = async ({
   const genre = params.genre || null;
 
   const { data: books } = await sanityFetch({
-    query: `*[_type == "books" && (!defined($genre) || genre match $genre)]`,
+    query: `*[_type == "books" && (!defined($genre) || genre match $genre)] | order(_updatedAt desc)`,
     params: { genre },
   });
 

@@ -191,4 +191,24 @@ h2 {
   .submit-message {
     @apply size-8! hover:cursor-pointer hover:scale-110 transition align-middle!;
   }
+
+  .admin-book-details {
+    @apply sm:w-2/3 flex flex-col gap-5 justify-between;
+  }
+
+  .admin-book-details-details-button {
+    @apply flex flex-col sm:flex-row gap-5 items-center justify-center h-full;
+  }
+
+  .admin-book-details-details {
+    @apply w-full sm:w-1/2 pl-10 pt-5 flex flex-col justify-between h-full;
+  }
+
+  .admin-book-details-button {
+    @apply flex w-full sm:w-1/2 h-full justify-center items-center;
+  }
+
+  .admin-comment {
+    @apply flex flex-col sm:flex-row items-center gap-3;
+  }
 }

@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const revalidate = 0;
@@ -22,6 +24,18 @@ const Admin = async () => {
 
   if (role !== "admin") redirect("/");
 
+  const { data: books } = await sanityFetch({
+    query: `*[_type == "books"] | order(publishedAt desc){
+      _id,
+      author,
+      title,
+      publishmentYear,
+      "image": images[0].url,
+      "owner": owner->name,
+      publishedAt
+    }`,
+  });
+
   const { data: comments } = await sanityFetch({
     query: `*[_type == "comments"] | order(timestamp desc){
         comment,
@@ -36,6 +50,80 @@ const Admin = async () => {
       <h1>Nadzorna stran</h1>
 
       <div className="section-primary mt-10">
+        <h2>Najnovejše objavljene knjige</h2>
+
+        {books.length > 0 ? (
+          <ul className="space-y-5">
+            {books.map(
+              (book: {
+                _id: string;
+                author: string;
+                title: string;
+                publishmentYear: string;
+                image: string;
+                owner: string;
+                publishedAt: string;
+              }) => (
+                <li
+                  key={book._id}
+                  className="section-secondary flex flex-col sm:flex-row"
+                >
+                  <Image
+                    src={book.image}
+                    alt="bookimage"
+                    width={300}
+                    height={300}
+                    className="book-image w-full sm:w-1/3!"
+                  />
+
+                  <div className="admin-book-details">
+                    <div className="admin-book-details-details-button">
+                      <div className="admin-book-details-details">
+                        <p className="text-lg">
+                          <span className="text-base hidden sm:inline">
+                            Avtor:{" "}
+                          </span>
+                          {book.author}
+                        </p>
+                        <p className="text-lg">
+                          <span className="text-base hidden sm:inline">
+                            Naslov:{" "}
+                          </span>
+                          {book.title}
+                        </p>
+                        <p className="text-lg">
+                          <span className="text-base hidden sm:inline">
+                            Leto izdaje:{" "}
+                          </span>
+                          {book.publishmentYear}
+                        </p>
+                      </div>
+                      <div className="admin-book-details-button">
+                        <Link
+                          href={`/book-details-owner/${book._id}`}
+                          className="btn w-full sm:w-50 text-center"
+                        >
+                          Podrobnosti
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="text-lg pl-10">Objavil: {book.owner}</p>
+                      <p className="text-lg">
+                        {new Date(book.publishedAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ),
+            )}
+          </ul>
+        ) : (
+          <p>Trenutno ni objavljenih knjig.</p>
+        )}
+      </div>
+
+      <div className="section-primary">
         <h2>Najnovejši komentarji</h2>
 
         {comments.length > 0 ? (
@@ -48,7 +136,7 @@ const Admin = async () => {
                 commentator: string;
               }) => (
                 <li key={comment.timestamp}>
-                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <div className="admin-comment">
                     <div className="w-full">
                       <div className="flex justify-between">
                         <p>
