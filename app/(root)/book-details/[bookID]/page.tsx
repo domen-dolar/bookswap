@@ -6,6 +6,7 @@ import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import CurrentRating from "@/app/components/CurrentRating";
 import { redirect } from "next/navigation";
 import MessageOwner from "@/app/components/MessageOwner";
+import DeleteCommentButton from "@/app/components/DeleteCommentButton";
 
 export const revalidate = 0;
 
@@ -133,12 +134,24 @@ const BookDetails = async ({
                     _id: string;
                   }) => (
                     <li key={comment._id}>
-                      <div className="flex justify-between">
-                        <p>{comment.commentator}</p>
-                        <p>{new Date(comment.timestamp).toLocaleString()}</p>
-                      </div>
-                      <div className="section-secondary bg-tertiary/60!">
-                        {comment.comment}
+                      <div className="comment">
+                        <div className="w-full">
+                          <div className="flex justify-between">
+                            <p>{comment.commentator}</p>
+                            <p>
+                              {new Date(comment.timestamp).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="section-secondary bg-tertiary/60!">
+                            {comment.comment}
+                          </div>
+                        </div>
+
+                        {comment.commentator === session?.user?.name && (
+                          <div className="w-full sm:w-fit">
+                            <DeleteCommentButton commentID={comment._id} />
+                          </div>
+                        )}
                       </div>
                     </li>
                   ),

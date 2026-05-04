@@ -208,7 +208,7 @@ h2 {
     @apply flex w-full sm:w-1/2 h-full justify-center items-center;
   }
 
-  .admin-comment {
+  .comment {
     @apply flex flex-col sm:flex-row items-center gap-3;
   }
 }

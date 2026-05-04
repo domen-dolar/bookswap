@@ -139,7 +139,7 @@ const Admin = async () => {
                 commentator: string;
               }) => (
                 <li key={comment.timestamp}>
-                  <div className="admin-comment">
+                  <div className="comment">
                     <div className="w-full">
                       <div className="flex justify-between">
                         <p>
