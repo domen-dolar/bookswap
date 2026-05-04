@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ProfileOrLogoutButton from "./ProfileOrLogoutButton";
 import { client } from "@/sanity/lib/client";
+import SearchBar from "./SearchBar";
 
 const Navbar = async () => {
   const session = await auth();
@@ -26,6 +27,8 @@ const Navbar = async () => {
           <Image src="/logo.png" alt="logo" width={64} height={64} />
           <span className="ml-3 hidden sm:inline text-xl">BookSwap</span>
         </Link>
+
+        <SearchBar />
 
         <div className="flex items-center gap-5">
           {session ? (

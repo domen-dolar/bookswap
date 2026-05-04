@@ -8,15 +8,24 @@ export const revalidate = 0;
 const Home = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ genre?: string }>;
+  searchParams: Promise<{ genre?: string; search?: string }>;
 }) => {
   const params = await searchParams;
 
   const genre = params.genre || null;
 
+  const search = params.search || null;
+
   const { data: books } = await sanityFetch({
-    query: `*[_type == "books" && (!defined($genre) || genre match $genre)] | order(_updatedAt desc)`,
-    params: { genre },
+    query: `
+      *[
+        _type == "books" && 
+          (!defined($genre) || genre match $genre) && 
+            (!defined($search) || 
+            (title match "*" + $search + "*") || (author match "*" + $search + "*") || (string(publishmentYear) match "*" + $search + "*")
+          )
+      ] | order(_updatedAt desc)`,
+    params: { genre, search },
   });
 
   return (
