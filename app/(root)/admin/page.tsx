@@ -1,3 +1,4 @@
+import DeleteCommentButton from "@/app/components/DeleteCommentButton";
 import { auth } from "@/auth";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
@@ -38,6 +39,7 @@ const Admin = async () => {
 
   const { data: comments } = await sanityFetch({
     query: `*[_type == "comments"] | order(timestamp desc){
+        _id,
         comment,
         timestamp,
         "book": book->title,
@@ -130,6 +132,7 @@ const Admin = async () => {
           <ul className="space-y-5">
             {comments.map(
               (comment: {
+                _id: string;
                 comment: string;
                 timestamp: string;
                 book: string;
@@ -149,9 +152,7 @@ const Admin = async () => {
                       </div>
                     </div>
 
-                    <button className="btn bg-red-500! w-full sm:w-30">
-                      Izbriši
-                    </button>
+                    <DeleteCommentButton commentID={comment._id} />
                   </div>
                 </li>
               ),
